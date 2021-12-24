@@ -1,0 +1,756 @@
+local requirements={
+	ConfigSetup={
+		AlwaysDay=false, 
+		AlwaysNight=false,
+		SpookEnabled=false,
+		NoFog=false,
+		WaterGodMode=false,
+		WaterFloat=true, 	
+		WaterWalk=false,
+		flyKey='F',
+		hardDragger=false,
+		oldNoclipEnabled=false,
+		antiBlacklist=false,
+		light=false,
+		fastRotate=false,
+		gameMusic=true,
+		uiDarkMode=true,
+		wireMod=false,
+		carColorR=0,
+		carColorG=0,
+		carColorB=0,
+		carMaterial='Plastic',
+		carVisualEffects=false,
+		blackListAll=false,
+		SprintKey='Q',
+		NoclipKey='LeftControl',
+		KeyTP='G',
+		toggleUI='RightShift',
+		FlingKey='H',
+	};
+	Booleans={
+		DeveloperMode=true,
+		Noclip=false,
+		Sprinting=false,
+		State=false,
+		isFlying=false,
+		isEnabled=true,
+		friendsOnly=false,
+		pingMessages=false,
+		sendNotifications=false,
+		infJumpEnabled=false,
+		memeMode=false,
+		MoneyDuping=false,
+		DisableSlotSaving=false,
+		Flinging=false,
+		DonatingBase=false,
+		alertTarget=true,
+		building=false,
+		treeIsCut=false,
+		isLoopBringTreeEnabled=false,
+		isPlankCut=false,
+		cutAssistEnabled=false,
+		dupeInventory=false,
+		vipMode=false,
+		wireMod=false,
+		axeDuping=false,
+		isBuying=false,
+		AutoBuyingRuki=false,
+		bringBoulders=nil,
+		devMode=true,
+		abortAutobuy=false,
+		loopBuying=false,
+		dragExists=false,
+		StopDespawn=false,
+		managingTarget=false,
+	};
+	tables={
+		axeList={},
+		allItems={},
+		itemListForBaseDrop={},
+	};
+	Strings={
+		WalkSpeed=16,
+		flySpeed=150,
+		JumpPower=50,
+		HipHeight=0,
+		colorToSpawn=131,
+		PlayerToAdminWipe=tostring(game.Players.LocalPlayer),
+		buildToBuild='Lumbo',
+		SprintSpeed=20,
+		selectedPlotToLoad=1,
+		specialAutobuyItem='Build Power',
+		CurrentRegion='Region_Main',
+		DestroyStores=false,
+		selectedPlot=1,
+		autoDupeMoneyAmount=1,
+		BaseRecipient=tostring(game.Players.LocalPlayer),
+		autoBuildPlayer=tostring(game.Players.LocalPlayer),
+		autoBuildReciever=tostring(game.Players.LocalPlayer),
+		ToolDuplicationAmount=1,
+		IdentifyType='Owner',
+		bringSelectedTreeAmount=1,
+		selectedTree='Generic',
+		autoBuySelectedItemAmount=1,
+		autoBuySelectedItem='BasicHatchet',
+		plankModel=nil,
+		blueprintModel=nil,
+		selfDuping=false,
+		itemToOpen=nil,
+		itemTypeToWipe='Structure',
+		DonationAmount=1,
+		donationRecipient=tostring(game.Players.LocalPlayer),
+		TreeModel=nil,
+		selectedTarget=tostring(game.Players.LocalPlayer);
+		carSpeed=1.5,
+		selectedWire='NeonWirePinky',
+		baseDropOwner=tostring(game.Players.LocalPlayer),
+		itemToBaseDrop='All Items',
+		baseDropAmount=0
+	};
+	services={
+		RunService=game:GetService('RunService'),
+		marketplaceService=game:GetService('MarketplaceService'),
+		userInputService=game:GetService('UserInputService'),
+		Lighting=game:GetService('Lighting'),
+		VU=game:GetService('VirtualUser'),
+		teleportService=game:GetService('TeleportService');
+	},
+	connections={
+		main=nil,
+		noclip=nil,
+		infJump=nil,
+		antiWeld=nil,
+		timeCycle=nil,
+		farAxeEquip=nil,
+		autoChop=nil,
+		clientMayLoad=nil,
+		hardDragger=nil,
+		PlankToBlueprint=nil,
+		axeFling=nil,
+		chopTree=nil,
+		openItem=nil,
+		woodSelection=nil,
+		autoKickPlayer=nil,
+		cutAssist=nil,
+		cutAssistCutter=nil,
+		bringTree=nil,
+		spawnCheck=nil,
+		carFallBack=nil,
+		bringBoulders=nil,
+		carInitiate=nil,
+		humCheck=nil,
+		grayPaintTool=nil,
+		draggerRemoved=nil,
+		spawnCar=nil,
+		antiGUI=nil,
+		draggerAdded=nil,
+		shiftConnectEnded=nil,
+		shiftConnectBegan=nil;
+	};
+	folders={
+		axeFolder=game:GetService('ReplicatedStorage').Purchasables.Tools.AllTools,
+		blueprintFolder=game:GetService('ReplicatedStorage').Purchasables.Structures.BlueprintStructures,
+	};
+	remotes={
+		clientPurchasedProperty=game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientPurchasedProperty,
+		setPropertyPurchasingValue=game:GetService'ReplicatedStorage'.PropertyPurchasing.SetPropertyPurchasingValue,
+		clientInteracted=game:GetService('ReplicatedStorage').Interaction.ClientInteracted,
+		clientRequestOwnership=game:GetService('ReplicatedStorage').Interaction.ClientRequestOwnership,
+		clientIsDragging=game:GetService('ReplicatedStorage').Interaction.ClientIsDragging,
+		clientMayLoad=game:GetService('ReplicatedStorage').LoadSaveRequests.ClientMayLoad,
+		requestLoad=game:GetService('ReplicatedStorage').LoadSaveRequests.RequestLoad,
+		requestSave=game:GetService('ReplicatedStorage').LoadSaveRequests.RequestSave,
+		clientExpandedProperty=game:GetService'ReplicatedStorage'.PropertyPurchasing.ClientExpandedProperty,
+		destroyStructure=game:GetService'ReplicatedStorage'.Interaction.DestroyStructure,
+		Donate=game:GetService'ReplicatedStorage'.Transactions.ClientToServer.Donate,
+		clientSetListPlayer=game:GetService('ReplicatedStorage').Interaction.ClientSetListPlayer,
+		sayMessageRequest=game:GetService('ReplicatedStorage').DefaultChatSystemChatEvents.SayMessageRequest,
+		clientIsWhitelisted=game:GetService('ReplicatedStorage').Interaction.ClientIsWhitelisted,
+		remoteProxy=game:GetService('ReplicatedStorage').Interaction.RemoteProxy,
+		playerChatted=game:GetService('ReplicatedStorage').NPCDialog.PlayerChatted,
+		setChattingValue=game:GetService('ReplicatedStorage').NPCDialog.SetChattingValue,
+		clientPlacedStructure=game:GetService('ReplicatedStorage').PlaceStructure.ClientPlacedStructure,
+	};
+	getFuckedList={};
+	SignTable={
+		'Oddy Is Best Builder 2021',
+		'#Lumbo Winning',
+		'Rukiryaxe Autobuy #1',
+		'Electro Tech Go Brrr??',
+		'Dogix? More Like Fatix',
+		'Yona Best Scripter',
+		'JB36? More Like GayBee36',
+		'I Am Watching You',
+		'Thom Wrote This',
+		'Zolarketh Really Loves Sand',
+		'You Use Dex???? Nebxplorer Winning Bro...',
+		'Lumber Tycoon 2 > Your Mom',
+		'Defaultio You Know This Game Exists Right??',
+		'"I Hacked PSN In 2014??"',
+		'Fuck Off Human Trash',
+		'Alex uncap labels nob',
+		'hookfunction is Synapse\'s best function',
+		'Cock R\'Us',
+		'??????????????',
+		'WipeMetaData Meme',
+		'Selling 10inch Cocks For Only $1'
+	};
+}
+
+functions = {}
+
+
+functions.getAllBP=function()
+	if #game.Players.LocalPlayer.PlayerBlueprints.Blueprints:children()<69 then
+		for _,v in next,requirements.folders.blueprintFolder:children()do
+			local newBP=v:Clone();
+			newBP.Parent=game.Players.LocalPlayer.PlayerBlueprints.Blueprints;
+		end;
+	else
+		functions.notify('Error','You have all blueprints!',4);
+	end;
+end;
+
+functions.MaxLand=function(Plot)
+	if not functions.getPlayersBase(tostring(game.Players.LocalPlayer))then 
+		functions.FreeLand();
+	end;
+	if not Plot then 
+		Plot=functions.getPlayersBase(tostring(game.Players.LocalPlayer));
+	end;
+	local OriginSquare=Plot.OriginSquare;
+	local children=#Plot:children()
+	if children >=26 and not requirements.Strings.selfDuping then 
+		functions.notify('Error','Already Max-Landed',4);
+		return;
+	end;
+	requirements.remotes.setPropertyPurchasingValue:InvokeServer(true);
+	requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 40, OriginSquare.Position.Y, OriginSquare.Position.Z));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 40, OriginSquare.Position.Y, OriginSquare.Position.Z));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X, OriginSquare.Position.Y, OriginSquare.Position.Z + 40));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X, OriginSquare.Position.Y, OriginSquare.Position.Z - 40));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 40, OriginSquare.Position.Y, OriginSquare.Position.Z + 40));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 40, OriginSquare.Position.Y, OriginSquare.Position.Z - 40));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 40, OriginSquare.Position.Y, OriginSquare.Position.Z + 40));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 40, OriginSquare.Position.Y, OriginSquare.Position.Z - 40));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 80, OriginSquare.Position.Y, OriginSquare.Position.Z));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 80, OriginSquare.Position.Y, OriginSquare.Position.Z));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X, OriginSquare.Position.Y, OriginSquare.Position.Z + 80));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X, OriginSquare.Position.Y, OriginSquare.Position.Z - 80));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 80, OriginSquare.Position.Y, OriginSquare.Position.Z + 80));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 80, OriginSquare.Position.Y, OriginSquare.Position.Z - 80));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 80, OriginSquare.Position.Y, OriginSquare.Position.Z + 80));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 80, OriginSquare.Position.Y, OriginSquare.Position.Z - 80));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 40, OriginSquare.Position.Y, OriginSquare.Position.Z + 80));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 40, OriginSquare.Position.Y, OriginSquare.Position.Z + 80));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 80, OriginSquare.Position.Y, OriginSquare.Position.Z + 40));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 80, OriginSquare.Position.Y, OriginSquare.Position.Z - 40));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 80, OriginSquare.Position.Y, OriginSquare.Position.Z + 40));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 80, OriginSquare.Position.Y, OriginSquare.Position.Z - 40));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X + 40, OriginSquare.Position.Y, OriginSquare.Position.Z - 80));requirements.remotes.clientExpandedProperty:FireServer(Plot ,CFrame.new(OriginSquare.Position.X - 40, OriginSquare.Position.Y, OriginSquare.Position.Z - 80));
+	functions.Teleport(CFrame.new(Plot.OriginSquare.CFrame.p) + Vector3.new(0, 5, 0));
+	functions.DeleteSurroundingTrees();
+	requirements.remotes.setPropertyPurchasingValue:InvokeServer(false);
+end;
+
+functions.Teleport=function(cf)
+	repeat wait()until game.Players.LocalPlayer.Character:FindFirstChild('HumanoidRootPart');
+	if game.Players.LocalPlayer.Character.Humanoid.Sit then 
+		game.Players.LocalPlayer.Character.Humanoid.SeatPart.Parent:SetPrimaryPartCFrame(cf*CFrame.Angles(math.rad(game.Players.LocalPlayer.Character.Humanoid.SeatPart.Parent.PrimaryPart.Orientation.X), math.rad(game.Players.LocalPlayer.Character.Humanoid.SeatPart.Parent.PrimaryPart.Orientation.Y), math.rad(game.Players.LocalPlayer.Character.Humanoid.SeatPart.Parent.PrimaryPart.Orientation.Z)));
+	elseif not game.Players.LocalPlayer.Character.Humanoid.Sit then 
+		game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(cf)
+	end;
+end;
+
+functions.DeleteSurroundingTrees=function()
+	for _,v in next,game.Workspace:children()do
+		if tostring(v)=='TreeRegion'then
+			for _,g in next,v:children()do
+				if(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p-g.WoodSection.CFrame.p).magnitude<150 then 
+					requirements.remotes.clientIsDragging:FireServer(g);
+					requirements.remotes.destroyStructure:FireServer(g);
+				end;
+			end;
+		end;
+	end;
+end;
+
+functions.getPlayersBase=function(plr)
+	for i,v in next,game.Workspace.Properties:children()do 
+		if v:IsA('Model')and tostring(v.Owner.Value)==plr then 
+			return v;
+		end;
+	end;
+	return false;
+end;
+
+functions.FreeLand=function()
+	if functions.getPlayersBase(tostring(requirements.LP))then 
+		functions.notify('Error','You already have a plot!',4);
+		return;
+	end;
+	local plot=functions.getFreeLand();
+	requirements.remotes.setPropertyPurchasingValue:InvokeServer(true);
+	requirements.remotes.clientPurchasedProperty:FireServer(plot, plot.OriginSquare.CFrame.p);
+	requirements.remotes.setPropertyPurchasingValue:InvokeServer(false);
+	functions.Teleport(CFrame.new(plot.OriginSquare.CFrame.p)+Vector3.new(0,5,0));
+end;
+
+functions.notify=function(title, text, duration)
+	if requirements.Booleans.isEnabled then
+		game.StarterGui:SetCore(
+			'SendNotification',
+			{
+				Title=title,
+				Text=text,
+				Duration=duration;
+			}
+		);
+	end;
+end;
+
+functions.PlotLogic=function()
+	if game.Players.LocalPlayer.CurrentSaveSlot.Value== -1 then
+		functions.notify('Error', 'No Plot Is Loaded..', 4);
+		return;                      
+	end;
+	if not requirements.remotes.clientMayLoad:InvokeServer(requirements.LP)then
+		functions.notify('Error', 'Load is on cooldown. Waiting...', 4)
+		repeat
+			wait(5)
+		until requirements.remotes.clientMayLoad:InvokeServer(requirements.LP);
+		functions.notify('Lumbo', 'Loading plot...', 4);
+	end;
+	return true;
+end;
+
+functions.fastLoadSelectedPlot=function(slotnum)
+	local scr=getsenv(game.Players.LocalPlayer.PlayerGui.PropertyPurchasingGUI.PropertyPurchasingClient);
+	local loadedSlot=nil;
+	if game.Players.LocalPlayer.CurrentSaveSlot.Value~=-1 and not requirements.Booleans.MoneyDuping then 
+		requirements.remotes.requestSave:InvokeServer(requirements.LP.CurrentSaveSlot.Value,requirements.LP)
+	end
+	spawn(function()
+		loadedSlot=requirements.remotes.requestLoad:InvokeServer(slotnum,requirements.LP);
+	end);
+	game:GetService("ReplicatedStorage").LoadSaveRequests.GetTickCut:InvokeServer();
+	repeat wait()until game.Players.LocalPlayer.PlayerGui.PropertyPurchasingGUI.SelectPurchase.Visible;
+	for i=1,20 do 
+		wait(.15);
+		scr.selectionMade();
+	end;
+	repeat wait()until loadedSlot~=nil;
+	game.Players.LocalPlayer.CurrentSaveSlot.Value=slotnum;
+	return loadedSlot;
+end;
+
+
+--Main Part--
+
+local hum = game:GetService("Players").LocalPlayer.Character.Humanoid
+local material = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/MaterialLua/master/Module.lua"))()
+local ui = material.Load({ Title = "Main", Style = 3, SizeY = 500, SizeX = 500, Theme = 'Dark' })
+local mainPage = ui.New({ Title = 'Main' })
+local page2 = ui.New({Title = 'Car Stuff'})
+local Wood = ui.New({Title = 'Wood Menu '})
+local Dupe = ui.New({ Title = 'Dupe Stuff'})
+local Plot = ui.New({ Title = 'Plot Stuff' })
+local page3 = ui.New({Title = 'Teleports'})
+local slider = mainPage.Slider({ 
+	Text = 'WalkSpeed', 
+	Min = 16, 
+	Max = 1000, 
+	Def = 16, 
+	Callback = function(v)
+		hum.WalkSpeed = v
+	end 
+})
+
+local slider2 = mainPage.Slider({
+	Text= 'Jump Power',
+	Min = 50,
+	Max = 1000,
+	Def = 16,
+	Callback = function(v) hum.JumpPower = v 
+	end,
+	Menu = {
+		Information = function(self)
+			ui.Banner({
+				Text = "This Changes Jump Power"
+			})
+		end,
+	}
+})
+
+local Slider3 = mainPage.Slider({
+	Text = "Hip Height",
+	Min = 0,
+	Max = 100,
+	Def = 0,
+	Callback = function(v) 
+		hum.HipHeight = v 
+	end,
+	Menu = {
+		Information = function(self)
+			ui.Banner({
+				Text = "Be Taller!"
+			})
+		end,
+	}
+})
+
+local carSlider = page2.Slider({
+	Text = 'Car Speed',
+	Min = 1,
+	Max = 10,
+	Def = 1.5,
+	Callback = function(v)
+		if game.Players.LocalPlayer.Character.Humanoid.SeatPart then
+			game.Players.LocalPlayer.Character.Humanoid.SeatPart.Parent.Configuration.MaxSpeed.Value = v
+		end
+	end,
+})
+
+local Button = mainPage.Button({
+	Text = 'Other Gui',
+	Callback = function()
+		loadstring(game:HttpGet('https://raw.githubusercontent.com/MrLordofE/GUIThingy/main/UpdatedScriptBeta'))()
+	end,
+	Menu = {
+		Information = function(self)
+			ui.Banner({
+				Text = 'Executes my other GUI with other features!'
+			})
+			
+		end,
+	}
+})
+
+local BoxedCars = page3.Button({
+	Text = 'Boxed Cars',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Workspace.Stores.CarStore.Counter.CFrame
+	end,
+})
+
+local BoxedCars = page3.Button({
+	Text = 'Wood R Us',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Workspace.Stores.WoodRUs.Counter.CFrame
+	end,
+})
+
+local BoxedCars = page3.Button({
+	Text = 'Shack',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Workspace.Stores.ShackShop.Counter.CFrame
+	end,
+})
+
+local BoxedCars = page3.Button({
+	Text = 'LandStore',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Workspace.Stores.LandStore.Union.CFrame
+	end,
+})
+
+local BoxedCars = page3.Button({
+	Text = 'Furniture Store',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Workspace.Stores.FurnitureStore.Counter.CFrame
+	end,
+})
+
+local BoxedCars = page3.Button({
+	Text = 'Logic Store',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Workspace.Stores.LogicStore.Counter.CFrame
+	end,
+})
+
+local BoxedCars = page3.Button({
+	Text = 'Fine Art',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Workspace.Stores.FineArt.Counter.CFrame
+	end,
+})
+
+local WaterCave = page3.Button({
+	Text = 'Water Cave',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Workspace.Region_WaterCave.Memorial.Stone.Part.CFrame
+	end,
+})
+
+local Volcano = page3.Button({
+	Text = 'Volcano',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1588,623,1069)
+	end,
+})
+
+local Cave = page3.Button({
+	Text = 'Cave (blue wood)',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(3590,-177,415)
+	end,
+})
+
+local FrostTree = page3.Button({
+	Text = 'Ice Tree',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1487,415,3259)
+	end,
+})
+
+local Den = page3.Button({
+	Text = 'The Den',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(330.259735, 45.7998505, 1943.30823, 0.972010553, -8.07546598e-08, 0.234937176, 7.63610259e-08, 1, 2.77986647e-08, -0.234937176, -9.08055142e-09, 0.972010553)
+	end,
+})
+
+local StrangeMan = page3.Button({
+	Text = 'Strange Man',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1071,16,1141)
+	end,
+})
+
+local ShrineOfSight = page3.Button({
+	Text = 'Shrine of Sight',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1608,195,928)
+	end,
+})
+
+local SkiLodge = page3.Button({
+	Text = 'Ski Lodge',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1244,59,2290)
+	end,
+})
+
+local Palm = page3.Button({
+	Text = 'Palm Wood',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(2614,-4,-34)
+	end,
+})
+
+local VWin = page3.Button({
+	Text = 'Volcano Win',
+	Callback = function()
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1667,349,1474)
+	end,
+})
+
+local AxeDupe = Dupe.Button({
+	Text = 'Dupe Axes',
+	Callback = function()
+		local oldpos = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+		wait(.1)
+		game.Players.LocalPlayer.Character.Humanoid:UnequipTools()
+		for _,Tool in next, game.Players.LocalPlayer.Backpack:GetChildren() do
+			if Tool:IsA('Tool') and Tool:FindFirstChild('ToolName') then
+				game.ReplicatedStorage.Interaction.ClientInteracted:FireServer(Tool, 'Drop tool', game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame)
+			end
+		end
+		game.Players.LocalPlayer.Character.Head:Destroy()
+		game.Players.LocalPlayer.CharacterAdded:Wait()
+		wait(3)
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(oldpos)
+	end,
+})
+
+local SitAllCar = page2.Toggle({
+	Text = 'Sit in All Cars',
+	Callback = function(v)
+		if v then
+			print("Can Sit")
+			game.Players.LocalPlayer.PlayerGui.Scripts.SitPermissions.Disabled = true
+		elseif not v then
+			print("Cannot Sit")
+			game.Players.LocalPlayer.PlayerGui.Scripts.SitPermissions.Disabled = false
+		
+		end
+	end,
+	Enabled = false
+})
+
+
+local ClaimAll = mainPage.Button({
+	Text = 'Claim All Free Land (do not have slot loaded)WIP',
+	Callback = function()
+		for _,v in next,game.Workspace.Properties:children()do
+			if v:FindFirstChild('OriginSquare')and v.Owner.Value==nil then
+				game.ReplicatedStorage.Interaction.ClientIsDragging:FireServer(v)
+				print('Claimed all Free Land')
+			end;
+		end;
+	end,
+})
+
+local light = mainPage.Toggle({
+	Text = 'Human Flash Light',
+	Callback = function(value)
+		if value then
+			local light = Instance.new('PointLight', game.Players.LocalPlayer.Character.Head)
+			light.Name = "FlashLight"
+			light.Range = 150
+			light.Brightness = 1.7
+		elseif not value then
+			pcall (function()
+				game.Players.LocalPlayer.Character.Head.FlashLight:Destroy()
+			end)
+		end
+	end,
+	Enabled = false
+})
+
+local bringWood = Wood.Button({
+	Text = 'Bring all chopped wood to you',
+	Callback = function()
+		for _,Log in pairs(game.Workspace.LogModels:GetChildren()) do
+			if Log.Name:sub(1,6) == "Loose_" and Log:FindFirstChild("Owner") then
+				if Log.Owner.Value == game.Players.LocalPlayer then
+					Log:MoveTo(game.Players.LocalPlayer.Character.HumanoidRootPart.Position + Vector3.new(0,20,0))
+					for i=1,100 do
+						game.ReplicatedStorage.Interaction.ClientIsDragging:FireServer(Log)
+					end
+				end
+			end
+		end
+	end,
+})
+
+local WaterWalk = mainPage.Button({
+	Text = 'Walk on Water',
+	Callback = function()
+		for i,v in pairs(game.Workspace.Water:GetChildren()) do
+			if v.Name == "Water" and v:IsA("Part") then
+				v.CanCollide = true
+			end
+		end
+	end,
+	Enabled = false
+})
+
+local AntiBlck = mainPage.Toggle({
+	Text = 'AntiBlacklist (once on, cant turn off)',
+	Callback = function(v)
+		local scr=getsenv(game.Players.LocalPlayer.PlayerGui.BlackListGUI.ClientBeBlacklisted)
+		local old=scr.makeWalls
+		local old2=scr.checkIfPlayerNeedsToBeKicked
+		if v then
+			scr.makeWalls=function()end
+			scr.removeWalls()
+			scr.checkIfPlayerNeedsToBeKicked=function()end
+			local oldPos=game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+			local RunService = game:GetService('RunService').RenderStepped:connect(function()
+				pcall(function()
+					oldPos=game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+				end)
+			end)
+			for _,spawnLocation in next,workspace.Region_Main:children()do
+				if spawnLocation:IsA('SpawnLocation')then
+					spawnLocation.Touched:Connect(function(spawnPoint)
+						if spawnPoint.Parent==game.Players.LocalPlayer.Character then 
+							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame=oldPos
+						end
+					end)
+				end
+			end
+		end
+	end,
+	Enabled = false
+})
+
+local BTools = mainPage.Button({
+	Text = 'Give BTools',
+	Callback = function()
+		if game.Players.LocalPlayer.Backpack:FindFirstChildOfClass'HopperBin'then return end;
+		for index=1,4 do
+			Instance.new('HopperBin',game.Players.LocalPlayer.Backpack).BinType=index
+		end
+	end,
+})
+
+local FOV = mainPage.Slider({
+	Text = 'FOV Slider',
+	Min = 1,
+	Max = 120,
+	Def = 70,
+	Callback = function(v)
+		game.Workspace.CurrentCamera.FieldOfView = v
+	end,
+})
+
+local RsetFOV = mainPage.Button({
+	Text = 'Reset FOV',
+	Callback = function()
+		game.Workspace.CurrentCamera.FieldOfView = 70
+	end,
+})
+
+local FlipCar = page2.Button({
+	Text = 'Flip Car',
+	Callback = function()
+		game.Players.LocalPlayer.Character.Humanoid.SeatPart.Parent:SetPrimaryPartCFrame(game.Players.LocalPlayer.Character.Humanoid.SeatPart.Parent.PrimaryPart.CFrame*CFrame.Angles(math.rad(-180),0,0))
+	end,
+})
+
+
+local MoneyDupe = Dupe.Button({
+	Text ='Dupe Money',
+	Callback = function(amount, slot)
+		if not slot then 
+			slot=game.Players.LocalPlayer.CurrentSaveSlot.Value;
+		end;
+		amount = requirements.Strings.autoDupeMoneyAmount;
+		if requirements.Booleans.MoneyDuping then 
+			functions.notify('Error', 'Already Duping!',4);
+			return;
+		end;
+		if requirements.Booleans.DisableSlotSaving then 
+			functions.notify('Error','Disable slot saving is enabled!',4);
+			return;
+		end;
+		functions.PlotLogic();
+		requirements.Booleans.MoneyDuping=true;
+		for i=1,amount do
+			spawn(function()requirements.remotes.Donate:InvokeServer(game.Players.LocalPlayer,game.Players.LocalPlayer.leaderstats.Money.Value,game.Players.LocalPlayer.CurrentSaveSlot.Value)end);
+			local Money = game.Players.LocalPlayer.leaderstats.Money.Value;
+			if Money~=0 then 
+				functions.notify('Lumbo','Waiting for donation...',4);
+				repeat wait()spawn(function()requirements.remotes.Donate:InvokeServer(game.Players.LocalPlayer, game.Players.LocalPlayer.leaderstats.Money.Value,game.Players.LocalPlayer.CurrentSaveSlot.Value)end); 
+					local Money = game.Players.LocalPlayer.leaderstats.Money.Value;
+				until Money==0; 
+			end;
+			functions.notify('Lumbo','Loading slot...',4);
+			functions.fastLoadSelectedPlot(slot);
+			repeat wait()until game.Players.LocalPlayer.CurrentlySavingOrLoading.Value==false;
+			requirements.remotes.requestSave:InvokeServer(slot,game.Players.LocalPlayer)
+			wait(5)
+			requirements.remotes.requestSave:InvokeServer(slot,game.Players.LocalPlayer)
+			amount=amount-1;
+			if amount==0 then 
+				functions.notify('Lumbo','Dupe Money Finished.',5);
+				requirements.Booleans.MoneyDuping=false
+			end;
+		end;
+	end;
+})
+
+local MaxLand = Plot.Button({
+	Text = 'Get Max Land (must have land purchased)',
+	Callback = function()
+		functions.MaxLand(functions.getPlayersBase(tostring(game.Players.LocalPlayer)));
+	end,
+})
+
+local allBP = Plot.Button({
+	Text = 'Get All BluePrints (temp)',
+	Callback = function()
+		functions.getAllBP();
+	end,
+})
+
+local Fly = mainPage.Toggle({
+	Text = 'Fly Toggle',
+	Callback = function(value)
+		if value then
+			
+		elseif not value then
+			
+		end
+	end,
+})
+
+local SafeDeath = mainPage.Button({
+	Text = 'Safe Death',
+	Callback = function()
+		pcall(function()
+			game.Players.LocalPlayer.Character.Head:Destroy()
+		end)
+	end,
+})
